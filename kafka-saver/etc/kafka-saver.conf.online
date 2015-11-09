@@ -1,0 +1,3 @@
+[global]
+debug: off
+max_processor: 8

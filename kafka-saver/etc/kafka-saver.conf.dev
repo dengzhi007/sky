@@ -1,0 +1,36 @@
+[global]
+debug: on
+#max_processor: 16
+worker_num: 10
+#log_level: debug info error
+log_level: debug
+alarm_url: http://alarmurl.com
+alarm_interval: 3600
+
+[server]
+#bind: 127.0.0.1
+port: 9555
+max_clients: 100
+header_length: 10
+max_body_length: 102400
+ip_whitelist: 127.0.0.1;10.115.205.119;10.115.205.120
+accept_timeout: 180
+connection_timeout: 180
+packet_chan_size: 100000
+
+[item_blacklist]
+0: test
+
+[item_whitelist]
+6:   mem
+20:  cpu
+182: disk
+188: i_in
+189: e_in
+190: i_out
+191: e_out
+
+[kafka]
+brokers: 127.0.0.1:9092;10.1.1.1:9092
+topic: sky
+
