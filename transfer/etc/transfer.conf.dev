@@ -1,0 +1,32 @@
+[global]
+#max_processor: 16
+worker_num: 2
+#log_level: debug info error
+log_level: debug
+#alarm_url: http://alarmurl.com
+#alarm_interval: 360
+
+[server]
+#bind: 127.0.0.1
+port: 5986
+max_clients: 10000
+header_length: 10
+max_body_length: 102400
+accept_timeout: 180
+connection_timeout: 180
+packet_chan_size: 1000
+#slow_read: 1
+
+[backend]
+#one backend per worker
+#backend key name must begins with backend_list_ 
+backend_list_test: 127.0.0.1:7777;127.0.0.1:8888
+backend_list_self: 127.0.0.1:9999
+connection_timeout: 30
+send_timeout: 10
+retry_times: 3
+retry_interval: 1
+#receive buffer size: bytes,  receiving ok from backend
+receive_buffer_size: 4
+#sending buffer size: packets, generally 1500bytes/packet
+sending_buffer_size: 10000

@@ -1,0 +1,247 @@
+#! /bin/bash
+fatal() {
+    echo $1
+    exit 1
+}
+
+LOCAL=`dirname $0`
+cd $LOCAL || fatal "cd $LOCAL failed"
+
+DIR=`pwd`
+echo "working directory: $DIR"
+DEFAULT_INSTALL_DIR="/home/q/"
+
+USER=`whoami`
+if [ $USER != "root" ]
+then
+    echo "current user: $USER "
+fi
+
+TIME=`date "+%Y/%m/%d-%H:%M:%S"`
+echo "time: $TIME"
+
+TARGET="transfer"
+echo "application name: $TARGET"
+
+# environment dev online
+ENV="dev"
+echo "environment: $ENV"
+
+test -d bin || mkdir bin
+test -d etc || mkdir etc
+test -f etc/${TARGET}.conf && rm -f etc/${TARGET}.conf
+test -d logs || mkdir logs
+test -f logs/main.log || echo "$TIME main first created" > logs/main.log
+test -f logs/error.log || touch logs/error.log
+
+if [ ! -f etc/${TARGET}.conf.dev ]
+then
+    touch etc/${TARGET}.conf.dev 
+    echo "[global]" >> etc/${TARGET}.conf.dev 
+    echo "debug: on" >> etc/${TARGET}.conf.dev 
+    echo "max_processor: 8" >> etc/${TARGET}.conf.dev 
+fi
+
+if [ ! -f etc/${TARGET}.conf.online ]
+then
+    touch etc/${TARGET}.conf.online
+    echo "[global]" >> etc/${TARGET}.conf.online 
+    echo "debug: off" >> etc/${TARGET}.conf.online 
+    echo "max_processor: 8" >> etc/${TARGET}.conf.online 
+fi
+
+cd etc/
+if [ $ENV == "dev" ]
+then 
+    ln -sf ${TARGET}.conf.dev ${TARGET}.conf 
+else
+    ln -sf ${TARGET}.conf.online ${TARGET}.conf 
+fi
+
+cd $DIR || fatal "cd $DIR failed"
+
+STATUS_RUNNING=1
+STATUS_STOPPED=2
+STATUS_NO_BINFILE=3
+
+help() {
+    echo "Usage: $0 [ start(-s) | stop(-t) | restart(-r) | build(-b) | install(-i) dest_dir | status | run | help ]"
+    exit 0
+}
+
+start() {
+    echo "start $TARGET..."
+    status
+    ret=$?
+
+    if [ $ret == $STATUS_RUNNING ] 
+    then 
+	echo "already in running status."
+	exit 1
+    fi
+
+    if [ $ret == $STATUS_NO_BINFILE ]
+    then 
+	echo "no executable program file in $DIR/bin, auto built."
+	build
+    fi
+
+    supervise $DIR/service &
+
+    echo "start success"
+}
+
+stop() {
+    echo "stop $TARGET..."
+    status
+
+    if [ $? != $STATUS_RUNNING ]
+    then 
+	echo "it is not running, no need to stop."
+	exit 1
+    fi
+
+    ps axu | grep supervise | grep $DIR/service | grep -v grep | awk '{print $2}' | xargs kill -9
+    sleep 2
+    killall $TARGET
+    echo "stop success"
+}
+
+restart() {
+    echo "restart $TARGET..."
+    status
+    if [ $? == $STATUS_RUNNING ]
+    then 
+	killall $TARGET
+	echo "restart success"
+	exit 0
+    fi
+
+    start
+}
+
+status() {
+    echo "check $TARGET status ..."
+    if [ ! -x bin/$TARGET ]
+    then 
+	return $STATUS_NO_BINFILE
+    fi
+
+    ret1=`ps axu | grep supervise | grep $DIR/service | grep -v grep`
+    if [ "$ret1"x == ""x ]
+    then
+	return $STATUS_STOPPED
+    fi
+
+    ret2=`ps axu | grep $TARGET | grep -v grep`
+    if [ "$ret2"x != ""x ]
+    then 
+	return $STATUS_RUNNING
+    fi
+
+    return $STATUS_STOPPED
+}
+
+build() {
+    echo "build $TARGET in $DIR/bin ..."
+
+    if [ ! -d "src" ]
+    then 
+	echo "no src directory, can not build"
+	exit 1
+    fi
+    
+    status
+    if [ $? == $STATUS_RUNNING ]
+    then
+	stop
+    fi
+    
+    echo "update service/run for supervise"
+    test -d service && rm -rf service
+    mkdir service
+    touch service/run
+    chmod +x service/run
+    echo "#! /bin/bash" >> service/run
+    echo "sleep 1" >> service/run
+    echo "cd $DIR && ./bin/$TARGET -c ./etc/${TARGET}.conf 1>>./logs/main.log 2>>./logs/error.log" >> service/run
+
+    if [ -x "bin/$TARGET" ]
+    then
+	echo "$TARGET exists, remove old program file"
+	rm -f bin/$TARGET
+    fi
+    
+    echo "go build ..."
+    export GOPATH=$DIR
+    go build -o bin/$TARGET src/main.go
+    
+    if [ -x "bin/$TARGET" ]
+    then
+	echo "build success"
+    else 
+	echo "build fail"
+	exit 1
+    fi
+}
+
+install() {
+    echo "install in $1 ..."
+    # cp binfile to destination directory
+    # add to /etc/rc.local
+}
+
+uninstall() {
+    echo "uninstall ..."
+}
+
+case $1 in
+start)
+    start
+    ;;
+stop)
+    stop
+    ;;
+restart)
+    restart
+    ;;
+status)
+    status
+    case $? in
+    1)
+	echo "running"
+	;;
+    2)
+	echo "stopped"
+	;;
+    3)
+	echo "no binary file in $DIR/bin"
+	;;
+    esac
+    ;;
+-i|install)
+    d=$2
+    if [ "$d"x == ""x ]
+    then 
+	echo "destination directory empty, installed in $DEFAULT_INSTALL_DIR"
+	echo "use: $0 install /xx/xx"
+	install $DEFAULT_INSTALL_DIR
+	exit 0
+    fi
+    install $d
+    ;;
+-u|uninstall)
+    uninstall
+    ;;
+-b|build)
+    build
+    ;;
+-r|run)
+    build
+    ./bin/$TARGET -c ./etc/${TARGET}.conf
+    ;;
+*)
+    help
+    ;;
+esac
+
