@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config
+END
+read.go
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/read.go
+END
+type.go
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/type.go
+END
+section.go
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/section.go
+END
+config.go
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/config.go
+END
+all_test.go
+K 25
+svn:wc:ra_dav:version-url
+V 120
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/all_test.go
+END
+option.go
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/option.go
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/Makefile
+END
+error.go
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/error.go
+END
+write.go
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/sbinet/go-config/config/write.go
+END

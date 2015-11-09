@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/hoisie/redis/tools
+END
+redis-load.go
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/hoisie/redis/tools/redis-load.go
+END
+redis-dump.go
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/ops-src/!svn/ver/32446/sky-mirror/backend-module/alarm_new/trunk/src/github.com/hoisie/redis/tools/redis-dump.go
+END

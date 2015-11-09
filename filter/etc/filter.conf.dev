@@ -1,0 +1,40 @@
+[global]
+debug: on
+#max_processor: 16
+worker_num: 1
+#log_level: debug info error
+log_level: debug
+alarm_url: http://alarmurl.com
+alarm_interval: 360
+
+[server]
+#bind: 127.0.0.1
+port: 8881
+max_clients: 100
+header_length: 10
+max_body_length: 102400
+accept_timeout: 180
+connection_timeout: 180
+packet_chan_size: 100000
+
+[updater]
+# addr ip:port
+redis_addr: 10.115.205.121:6378
+redis_db: 0
+# seconds: every 20min update rules from redis
+interval: 30
+
+[filter]
+filter_chan_size: 10000
+
+[backend]
+#backend key name must begins with backend_list_ 
+backend_list_alarm: 10.115.205.119:7010;10.115.205.120:7010
+#backend_list_ff: 10.115.113.122:8080;10.115.113.123:8080
+connection_timeout: 180
+send_timeout: 60
+retry_times: 5
+retry_interval: 5
+receive_buffer_size: 10
+sending_buffer_size: 10000
+
