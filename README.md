@@ -1,5 +1,5 @@
 # sky
-a monitor system by golang
+a monitor platform system by golang:
 transfer
 filter kafka
 alarm
